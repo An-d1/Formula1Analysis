@@ -14,7 +14,7 @@ def setup_fastf1_cache():
     # enable the cache to store the data locally
     fastf1.Cache.enable_cache(cache_dir)
 
-def load_session(year: int, gp: str, session_type: str = "R"): #session type set to race by default 'R'
+def load_session(year: int, gp: str, session_type: str): #session type set to race by default 'R'
     #dynamically fetch and load an f1 session from fastf1
 
     setup_fastf1_cache()
