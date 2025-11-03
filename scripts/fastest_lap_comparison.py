@@ -4,13 +4,12 @@ sys.path.append('../scripts')   # allows pysthon to find scripts/ folder
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import pandas as pd
-from timple.timedelta import strftimedelta
 
 import fastf1
 import fastf1.plotting
 from fastf1.core import Laps
 
-# I use this class to calculate the delta time of all drivers compared to the fastest one for either qualification session or for hte race session
+# I use this file to calculate the delta time of all drivers compared to the fastest one for either qualification session or for hte race session
 
 # Enable Matplotlib patches for plotting timedelta values
 fastf1.plotting.setup_mpl(mpl_timedelta_support=True, color_scheme=None)
@@ -45,7 +44,7 @@ def calculate_drivers_delta_time_compared_to_pole(session):
     return (pole_lap, fastest_laps)
 
 # This method can also be used to compare all the drivers fastes lap times 
-def plot_the_final_quali_ranking(session):
+def plot_the_final_time_ranking(session):
     #Just creates a list of team colors for the e plot
     team_colors = list()
 
