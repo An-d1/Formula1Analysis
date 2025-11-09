@@ -7,6 +7,7 @@ from fetch_data import load_session
 import fastest_lap_comparison
 import final_ranking
 import tyre_analysis
+import top2_drivers_best_laps_comparison
 
 
 # enable FastF1 cache
@@ -24,7 +25,7 @@ def get_gp_names_for_year(year: int):
 
 # --- streamlit UI ---
 st.set_page_config(page_title="F1 Race Analysis", page_icon="🏁")
-st.title("🏎️ F1 Race Analysis Dashboard")
+st.title("F1 Race Analysis Dashboard")
 
 # current year for upper bound
 current_year = datetime.now().year
@@ -52,22 +53,47 @@ if st.button("Start Race Analysis"):
             quali_session = load_session(selected_year, selected_gp, "Q")
             race_session = load_session(selected_year, selected_gp, "R")
 
-        st.success("GP Data successfully loaded!")
+        st.success("Geand Prix Data successfully loaded!")
 
         st.header("Qualifying Session")
-        fastest_lap_comparison.get_all_drivers_fastest_lap(quali_session)
-        fastest_lap_comparison.calculate_drivers_delta_time_compared_to_pole(quali_session)
-        fig1 = fastest_lap_comparison.plot_the_final_time_ranking(quali_session)
-        st.pyplot(fig1)
+        fastest_driver, fig1 = fastest_lap_comparison.plot_the_final_time_ranking(quali_session)
+
+        st.subheader(f"- Delta times of each driver compared to {fastest_driver}, the fastest driver")
+
+        st.pyplot(fig1) # to print the plot
+
+        st.markdown(f"""
+        * This plot clearly shows how much 'slower' every driver was compared to **{fastest_driver}** during qualifying session. 
+        """)
 
         st.header("Final Race Ranking")
         fig2 = final_ranking.plot_the_final_ranking(race_session)
         st.pyplot(fig2)
 
         st.header("Tyre Analysis During Race")
-        fig3 = tyre_analysis.plot_sessions_tyre_compounds_and_stints(race_session)
-        st.pyplot(fig3) # to print the plot
+        
+        st.subheader("Analysis: ")
+        st.markdown("""
+        This plot shows the lap time, tyre distribution for each driver. 
 
+        * **Key Insight:** It shows how different tyre compounds affected each drivers lap times.
+        * It also helps to notice the average tire life-time.   
+        """)
+
+        fig3 = tyre_analysis.plot_sessions_tyre_compounds_and_stints(race_session)
+        st.pyplot(fig3) 
+
+        st.caption("Data shown for all laps.")
+
+        st.header("Fastest Lap Comparison Between the Two Quickest Drivers")
+        the_fastest_of_two, the_second_driver, fig4 = top2_drivers_best_laps_comparison.plot_2_fastest_laps_comparison_side_by_side(race_session)
+        st.pyplot(fig4)
+
+        st.markdown(f"""
+
+        * **Key Isights:** This plot helps us realize where **{the_fastest_of_two}** gained the advantage over **{the_second_driver}**
+        * The most important parts to focus are the breaking points, and at which point the drivers picked up their speed. This helps us to realize the small differences in their lap-time.
+        """)
         st.success("Analysis completed!")
 
     except Exception as e:

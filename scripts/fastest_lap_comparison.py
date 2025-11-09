@@ -112,4 +112,9 @@ def plot_the_final_time_ranking(session):
     legend.get_title().set_color('white') 
     legend.get_title().set_fontsize(10)
 
-    return fig
+    full_name = session.results.loc[
+    session.results['Abbreviation'] == pole_lap['Driver'], 'FullName'
+    ].iloc[0]
+
+    fastest_driver = full_name #this is only used to be returned to the front for analysis
+    return (fastest_driver, fig)
