@@ -43,5 +43,5 @@ def plot_sessions_tyre_compounds_and_stints(session):
 
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.show()
 
+    return fig

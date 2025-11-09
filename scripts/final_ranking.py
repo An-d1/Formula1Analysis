@@ -1,6 +1,3 @@
-import sys
-sys.path.append('../scripts')   # allows pysthon to find scripts/ folder
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import pandas as pd
@@ -59,7 +56,9 @@ def plot_the_final_ranking(session):
             title='Teams',
             title_fontsize=10,
             fontsize=8)
+    
     # clean style
     ax.set_frame_on(False)
     plt.tight_layout()
-    plt.show()
+
+    return fig

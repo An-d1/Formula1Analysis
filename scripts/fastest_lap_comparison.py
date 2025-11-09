@@ -112,4 +112,4 @@ def plot_the_final_time_ranking(session):
     legend.get_title().set_color('white') 
     legend.get_title().set_fontsize(10)
 
-    plt.show()
+    return fig
