@@ -3,11 +3,38 @@ import matplotlib.patches as mpatches
 import pandas as pd
 from timple.timedelta import strftimedelta
 
+import seaborn as sns
+
+
 import fastf1
 import fastf1.plotting
 from fastf1.core import Laps
 
-def plot_sessions_tyre_compounds_and_stints(session):
+# this plot uses seaborn in  comparison to the one below which uses matplotlib. This one is simpler and more intuitive to understand, but sacrifices the stint data
+def plot_sessions_tyre_choices_using_seaborn(session):
+    laps = session.laps.pick_quicklaps() #Getting only the valid laps for each driver as they are the most relevant, (excluding ones like under security car or entering and exiting pits)
+    
+    # making a copy as not to work with the original data set
+    laps_data = laps[['Driver', 'LapTime', 'Compound', 'Stint']].copy()
+    laps_data['LapTime'] = laps_data['LapTime'].dt.total_seconds() # convert laptimes in seconds
+
+    sns.set_theme(style="whitegrid", palette = "dark")
+    fig, ax = plt.subplots(figsize=(16, 7))
+
+    sns.swarmplot(
+        data=laps_data, 
+        x='Driver',    
+        y='LapTime',   
+        hue='Compound',  
+        ax=ax          
+    )
+
+    ax.set(ylabel="Lap Time (seconds)", xlabel="Driver")
+    fastest_driver_name = laps_data.loc[laps_data['LapTime'].idxmin(), 'Driver']
+    return (fig, fastest_driver_name)
+
+
+def plot_sessions_tyre_compounds_and_stints(session): 
     laps = session.laps.pick_quicklaps() #Getting only the valid laps for each driver as they are the most relevant, (excluding ones like under security car or entering and exiting pits)
 
     laps_data = laps[['Driver', 'LapTime', 'Compound', 'Stint']].copy()

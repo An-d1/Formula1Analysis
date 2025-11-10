@@ -83,6 +83,16 @@ if st.button("Start Race Analysis"):
         fig3 = tyre_analysis.plot_sessions_tyre_compounds_and_stints(race_session)
         st.pyplot(fig3) 
 
+        fig31, fastest_driver_name = tyre_analysis.plot_sessions_tyre_choices_using_seaborn(race_session)
+        st.pyplot(fig31)
+
+        st.markdown(f"""
+        This plot shows the tyre choice and laptime for each lap for all drivers. 
+
+        * **Key Insight:** It shows how different tyre compounds affected each drivers lap times.
+        * One key takeaway is that we can clearly tell **{fastest_driver_name}** was the fastest driver during the race    
+        """)
+
         st.caption("Data shown for all laps.")
 
         st.header("Fastest Lap Comparison Between the Two Quickest Drivers")
@@ -91,6 +101,7 @@ if st.button("Start Race Analysis"):
 
         st.markdown(f"""
 
+        * **Legend:** The vertical dotted lines mark the turns 
         * **Key Isights:** This plot helps us realize where **{the_fastest_of_two}** gained the advantage over **{the_second_driver}**
         * The most important parts to focus are the breaking points, and at which point the drivers picked up their speed. This helps us to realize the small differences in their lap-time.
         """)
