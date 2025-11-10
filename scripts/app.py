@@ -80,11 +80,8 @@ if st.button("Start Race Analysis"):
         * It also helps to notice the average tire life-time.   
         """)
 
-        fig3 = tyre_analysis.plot_sessions_tyre_compounds_and_stints(race_session)
-        st.pyplot(fig3) 
-
-        fig31, fastest_driver_name = tyre_analysis.plot_sessions_tyre_choices_using_seaborn(race_session)
-        st.pyplot(fig31)
+        fig3, fastest_driver_name = tyre_analysis.plot_sessions_tyre_choices_using_seaborn(race_session)
+        st.pyplot(fig3)
 
         st.markdown(f"""
         This plot shows the tyre choice and laptime for each lap for all drivers. 
@@ -92,6 +89,17 @@ if st.button("Start Race Analysis"):
         * **Key Insight:** It shows how different tyre compounds affected each drivers lap times.
         * One key takeaway is that we can clearly tell **{fastest_driver_name}** was the fastest driver during the race    
         """)
+
+        st.subheader("Tyre sets distribution: ")
+
+        fig31 = tyre_analysis.tyre_stint_distribution(race_session)
+        st.pyplot(fig31)
+
+        st.markdown(f"""
+        This plot shows the number of tyre changes drivers performed during the race. 
+
+        * From this we can see the overall consumption of tyres.
+        """) 
 
         st.caption("Data shown for all laps.")
 
