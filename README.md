@@ -21,29 +21,7 @@ The project focuses on data retrieval, cleaning, manipulation, statistical analy
 
 - Modular and scalable code structure suitable for further extensions.
 
-2. Project Structure
-
-FORMULA1ANALYSIS/
-│
-├── scripts/
-│   ├── app.py                               # Streamlit dashboard
-│   ├── fetch_data.py                         # FastF1 session loading utilities
-│   ├── fastest_lap_comparison.py             # Fastest lap delta analysis
-│   ├── final_ranking.py                      # Final classification plot
-│   ├── positions_changed_during_the_race.py  # Position evolution analysis
-│   ├── top2_drivers_best_laps_comparison.py  # Two-driver lap comparison
-│   └── tyre_analysis.py                      # Tyre stints and degradation
-│
-├── notebooks/                                # Jupyter notebooks for full analysis
-│
-├── data/                                     # Optional static data storage
-├── external_data/                            # FastF1 cache (ignored via .gitignore)
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-
-3. Installation
+2. Installation
 
 - Clone the repository:
 
@@ -56,7 +34,7 @@ pip install -r requirements.txt
 
 - FastF1 caching is automatically enabled upon executing any data-loading function.
 
-4. Running the Dashboard
+3. Running the Dashboard
 
 - To launch the Streamlit application:
 
@@ -115,7 +93,7 @@ All plots and interpretations are generated dynamically.
 
 - Direct comparison of their fastest laps.
 
-9. Data Source
+6. Data Source
 
 - Data is retrieved through the FastF1 Python API, which provides:
 
@@ -129,7 +107,7 @@ All plots and interpretations are generated dynamically.
 
 - FastF1 documentation: https://theoehrly.github.io/Fast-F1/
 
-10. Author:
+7. Author:
 Andis Bara
 MSc Data Science for Economics and Health
 University of Milan
