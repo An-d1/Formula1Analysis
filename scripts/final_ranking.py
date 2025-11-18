@@ -7,6 +7,9 @@ import fastf1.plotting
 fastf1.plotting.setup_mpl(mpl_timedelta_support=True, color_scheme=None)
 
 def plot_the_final_ranking(session):
+
+    plt.rcdefaults() #Used to reset the grid to default, beacause some styles may  have been set globally by fastf1.plottting
+    
     results = session.results.copy()
 
     # turns numeric position for sorting, and looks for not valid data like DNF(did not finish) and converts them to NaN

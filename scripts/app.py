@@ -4,10 +4,12 @@ import fastf1
 
 # modules
 from fetch_data import load_session
+
 import fastest_lap_comparison
 import final_ranking
 import tyre_analysis
 import top2_drivers_best_laps_comparison
+import positions_changed_during_the_race
 
 
 # enable FastF1 cache
@@ -23,7 +25,7 @@ def get_gp_names_for_year(year: int):
         st.warning(f" Could not fetch schedule for {year}: {e}")
         return []
 
-# --- streamlit UI ---
+# streamlit UI
 st.set_page_config(page_title="F1 Race Analysis", page_icon="🏁")
 st.title("F1 Race Analysis Dashboard")
 
@@ -32,7 +34,7 @@ current_year = datetime.now().year
 
 selected_year = st.number_input(
     "Enter the year",
-    min_value=1950,
+    min_value=2018,
     max_value=current_year,
     value=current_year,
     step=1
@@ -57,10 +59,10 @@ if st.button("Start Race Analysis"):
 
        # Qualifying
         st.header("Qualifying Session")
-        fastest_driver, fig1 = fastest_lap_comparison.plot_the_final_time_ranking(quali_session)
+        fastest_driver, fig0 = fastest_lap_comparison.plot_the_final_time_ranking(quali_session)
         
         st.subheader(f"Gap to Pole Position ({fastest_driver})")
-        st.pyplot(fig1)
+        st.pyplot(fig0)
 
         st.markdown(f"""
         **How to read this chart:**
@@ -71,16 +73,37 @@ if st.button("Start Race Analysis"):
             * **Large jumps** between drivers often indicate different car performances, where some cars struggled in comparison to others.
         """)
 
-        # Race Ranking
-        st.header("Final Race Ranking")
-        fig2 = final_ranking.plot_the_final_ranking(race_session)
-        st.pyplot(fig2)
+                
+        # Positions Changed
+
+        st.subheader(f"Positions changed during the race")
+
+        fig1 = positions_changed_during_the_race.positions_changed_plot(session=race_session)
+        st.pyplot(fig1)
         
         st.markdown("""
-        This chart visualizes the final finishing order. Comparing this against the qualifying results helps to identify drivers who had strong **race pace** (moved up) versus those who struggled with tyre management or incidents (dropped down).
+        This chart tells the story of the race lap by lap.
+
+        * **The "Snake":** Follow a single driver's line. If it dips suddenly, they likely pitted or made a mistake. If it climbs gradually, they were overtaking.
+        * **Battles:** Look for areas where two lines criss-cross repeatedly; this indicates a fight for position.
+        * **Retirements:** If a line stops midway through the chart, that driver DNF'd (Did Not Finish).
+        """)
+        
+        # Tyre Analysis
+
+        st.subheader("Tyre Strategy & Stint History")
+        st.markdown("""
+        Tyre behavior dictates race strategy. The visualization below shows every driver's stint length and compound choice.
         """)
 
-        # Tyre Analysis
+        fig31 = tyre_analysis.tyre_stint_distribution(race_session)
+        st.pyplot(fig31)
+
+        st.markdown(f"""
+        **Strategic Takeaways:**
+        * **Stint Count:** Many high bars suggest a high-degradation race requiring multiple stops.
+        """) 
+
         st.header("Tyre Analysis During Race")
 
         fig3, fastest_driver_name = tyre_analysis.plot_sessions_tyre_choices_using_seaborn(race_session)
@@ -95,19 +118,16 @@ if st.button("Start Race Analysis"):
         * **Benchmark:** We can also see that **{fastest_driver_name}**, set the overall fastest pace.
         """)
 
-        st.subheader("Tyre Strategy & Stint History")
-        st.markdown("""
-        Tyre behavior dictates race strategy. The visualization below shows every driver's stint length and compound choice.
-        """)
-
-        fig31 = tyre_analysis.tyre_stint_distribution(race_session)
-        st.pyplot(fig31)
-
-        st.markdown(f"""
-        **Strategic Takeaways:**
-        * **Stint Count:** Many high bars suggest a high-degradation race requiring multiple stops.
-        """) 
         st.caption("Data shown for all completed laps.")
+
+        # Race Ranking
+        st.header("Final Race Ranking")
+        fig2 = final_ranking.plot_the_final_ranking(race_session)
+        st.pyplot(fig2)
+        
+        st.markdown("""
+        This chart visualizes the final finishing order. Comparing this against the qualifying results helps to identify drivers who had strong **race pace** (moved up) versus those who struggled with tyre management or incidents (dropped down).
+        """)
 
         # Fastest lap telementry
         st.header("Fastest Lap Comparison")
@@ -130,8 +150,8 @@ if st.button("Start Race Analysis"):
         * **Cornering Speed (Apex):** Look at the "valleys" (the lowest points at the dotted lines). A higher valley indicates a higher minimum speed through the middle of the corner.
         * **Traction (Exit):** Observe how steeply the line rises after the dotted line. A steeper slope means the driver was able to get back on full throttle earlier.
         """)
-        
+
         st.success("Analysis completed!")
-        
+
     except Exception as e:
         st.error(f" Error: {e}")

@@ -13,6 +13,7 @@ from fastf1.core import Laps
 
 # method to improve code reusibility
 def get_laps_data(session):
+    plt.rcdefaults()
     laps = session.laps.pick_quicklaps() #Getting only the valid laps for each driver as they are the most relevant, (excluding ones like under security car or entering and exiting pits)
     # making a copy as not to work with the original data set
     laps_data = laps[['Driver', 'LapTime', 'Compound', 'Stint']].copy()
@@ -24,6 +25,7 @@ def plot_sessions_tyre_choices_using_seaborn(session):
     laps_data['LapTime'] = laps_data['LapTime'].dt.total_seconds() # convert laptimes in seconds
 
     sns.set_theme(style="whitegrid", palette = "dark")
+    plt.rcdefaults()
     fig, ax = plt.subplots(figsize=(16, 7))
 
     sns.swarmplot(
