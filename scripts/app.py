@@ -88,6 +88,32 @@ if st.button("Start Race Analysis"):
         * **Battles:** Look for areas where two lines criss-cross repeatedly; this indicates a fight for position.
         * **Retirements:** If a line stops midway through the chart, that driver DNF'd (Did Not Finish).
         """)
+        # Consistency Analysis 
+        st.subheader("Driver Consistency Analysis")
+        
+        # Calculate consistency from module
+        consistency_df = fastest_lap_comparison.get_driver_consistency(race_session)
+        
+        # Splits layout into two columns: Metric and Table
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            if not consistency_df.empty:
+                most_consistent = consistency_df.iloc[0]
+                st.metric(
+                    label="Most Consistent Driver",
+                    value=most_consistent['Driver'],
+                    delta=f"±{most_consistent['Consistency (Std Dev) [s]']}s"
+                )
+                st.info("Lower Standard Deviation (Std Dev) means more consistent lap times.")
+        
+        with col2:
+            st.dataframe(consistency_df, hide_index=True)
+            
+        st.markdown("""
+        **Why this matters:**
+        Consistency is key in race pace. A driver with a **low standard deviation** is driving as best as possible, hitting the same lap times repeatedly, which is crucial for tyre management and strategy execution.
+        """)
         
         # Tyre Analysis
 

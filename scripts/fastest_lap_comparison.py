@@ -4,15 +4,52 @@ sys.path.append('../scripts')   # allows pysthon to find scripts/ folder
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import pandas as pd
+import numpy as np
 
 import fastf1
 import fastf1.plotting
 from fastf1.core import Laps
 
-# I use this file to calculate the delta time of all drivers compared to the fastest one for either qualification session or for the race session
+# I use this file to calculate the delta time of all drivers compared to the fastest one 
+# for either qualification session or for the race session
 
 # Enable Matplotlib patches for plotting timedelta values
 fastf1.plotting.setup_mpl(mpl_timedelta_support=True, color_scheme=None)
+
+def get_driver_consistency(session):
+    """
+    Calculates the standard deviation of lap times for each driver using NumPy.
+    A lower Standard Deviation (std) means the driver was more consistent.
+    
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        The loaded session data.
+        
+    Returns
+    -------
+    consistency_df : pandas.DataFrame
+        Dataframe containing Driver and their lap time Standard Deviation (Consistency).
+    """
+    drivers = pd.unique(session.laps['Driver'])
+    consistency_data = []
+
+    for drv in drivers:
+        # Gets only accurate racing laps (excluding pit-stop laps and Safety Car)
+        driver_laps = session.laps.pick_drivers(drv).pick_quicklaps().pick_accurate()
+        
+        if len(driver_laps) > 2:
+            lap_times_sec = driver_laps['LapTime'].dt.total_seconds()
+            
+            # using numpy to calculate standard deviation
+            consistency_score = np.std(lap_times_sec)
+            
+            consistency_data.append({
+                'Driver': drv,
+                'Consistency (Std Dev) [s]': round(consistency_score, 3)
+            })
+
+    return pd.DataFrame(consistency_data).sort_values(by='Consistency (Std Dev) [s]')
 
 # this method doesn't care about the fastf1.session as it will be provided when needed as a parameter by the cusotm method on fetch_data
 def get_all_drivers_fastest_lap(session):
