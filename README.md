@@ -39,5 +39,5 @@ FastF1 caching is automatically enabled when loading race sessions.
 Author
 
 Andis Bara
-MSc Data Science for Economics and Health
+MSc student Data Science for Economics and Health
 University of Milan
