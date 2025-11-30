@@ -7,6 +7,29 @@ import fastf1.plotting
 fastf1.plotting.setup_mpl(mpl_timedelta_support=True, color_scheme=None)
 
 def plot_the_final_ranking(session):
+    """
+    Plot the final race classification for a given FastF1 session.
+
+    This function visualizes the final race order using a horizontal
+    bar chart, where each bar corresponds to a driver and is colored
+    according to the driver's team. It handles both classified results 
+    (e.g., P1, P2, P3...) and non-classified statuses such as DNF, DSQ,
+    or NC. A legend showing all teams and their associated colors is
+    included for clarity.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        The loaded FastF1 session (usually a race session) containing
+        classification results, team names, and session metadata.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The Matplotlib figure object containing the final classification
+        visualization. This can be displayed or passed directly to
+        Streamlit.
+    """
 
     plt.rcdefaults() #Used to reset the grid to default, beacause some styles may  have been set globally by fastf1.plottting
     
@@ -23,7 +46,7 @@ def plot_the_final_ranking(session):
 
     # positions for display: show P# for classified, otherwise the raw label (e.g., DNF/DSQ/NC)
     pos_display = results.apply(
-        lambda r: f"P{int(r['PosNum'])}" if pd.notna(r['PosNum']) else (str(r['Position']) or "NC"),
+        lambda r: f"P{int(r['PosNum'])}" if pd.notna(r['PosNum']) else (str(r['Position']) or "DNF"),
         axis=1
     )
 

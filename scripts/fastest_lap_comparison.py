@@ -9,14 +9,32 @@ import fastf1
 import fastf1.plotting
 from fastf1.core import Laps
 
-# I use this file to calculate the delta time of all drivers compared to the fastest one for either qualification session or for hte race session
+# I use this file to calculate the delta time of all drivers compared to the fastest one for either qualification session or for the race session
 
 # Enable Matplotlib patches for plotting timedelta values
 fastf1.plotting.setup_mpl(mpl_timedelta_support=True, color_scheme=None)
 
 # this method doesn't care about the fastf1.session as it will be provided when needed as a parameter by the cusotm method on fetch_data
-# it gets all the drivers laps on the session and simply loops through them to get each ones fastest lap 
 def get_all_drivers_fastest_lap(session):
+    """
+    Return the fastest lap for each driver in a given FastF1 session.
+
+    The function extracts all drivers present in the session, selects
+    their fastest lap individually, and returns a FastF1 `Laps` object
+    containing one lap per driver, sorted by lap time.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        The loaded FastF1 session (race, qualifying, practice etc.)
+        containing telemetry and lap data.
+
+    Returns
+    -------
+    fastest_laps : fastf1.core.Laps
+        A `Laps` object where each row corresponds to the fastest lap
+        of a driver, sorted in ascending order of lap time.
+    """
     drivers = pd.unique(session.laps['Driver'])
     print(drivers)
 
@@ -33,9 +51,27 @@ def get_all_drivers_fastest_lap(session):
     .sort_values(by='LapTime') \
     .reset_index(drop=True)    
 
-    return fastest_laps # I return the list with all the fastest_laps for each driver
+    return fastest_laps 
 
 def calculate_drivers_delta_time_compared_to_pole(session):
+    """
+    Compute the lap-time delta of each driver's fastest lap relative
+    to the overall fastest lap ("pole lap") of the session.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        The loaded FastF1 session containing all laps.
+
+    Returns
+    -------
+    pole_lap : pandas.Series
+        The fastest lap in the session (the reference lap).
+    fastest_laps : fastf1.core.Laps
+        A `Laps` object where each driver's fastest lap is included,
+        with an additional column `LapTimeDelta` storing the time
+        difference to `pole_lap`.
+    """
     fastest_laps = get_all_drivers_fastest_lap(session) #getting the list from the method created above
 
     pole_lap = fastest_laps.pick_fastest() # returns the fastest driver, so we can calculate the difference for the others
@@ -45,6 +81,27 @@ def calculate_drivers_delta_time_compared_to_pole(session):
 
 # This method can also be used to compare all the drivers fastes lap times 
 def plot_the_final_time_ranking(session):
+    """
+    Plot a horizontal bar chart showing each driver's fastest lap
+    delta relative to the session's fastest lap.
+
+    The plot uses team colors, displays delta times in seconds next
+    to each bar, and includes a legend listing all teams. This
+    function is intended for use in the Streamlit dashboard.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        The FastF1 session from which lap times and team information
+        are extracted.
+
+    Returns
+    -------
+    fastest_driver : str
+        The full name of the fastest driver in the session.
+    fig : matplotlib.figure.Figure
+        The generated Matplotlib figure containing the ranking plot.
+    """
     #Just creates a list of team colors for the e plot
     team_colors = list()
 
@@ -71,7 +128,7 @@ def plot_the_final_time_ranking(session):
 
     # To add seconds on the side of each drivers time for more readibility
     for i, delta in enumerate(fastest_laps['LapTimeDelta']):
-        ax.text(delta + pd.Timedelta(seconds=0.02), #offsets the label so they dotn overlap
+        ax.text(delta + pd.Timedelta(seconds=0.02), #offsets the label so they dont overlap
                 i,
                 f"+{delta.total_seconds():.3f}s",
                 va='center',
@@ -116,5 +173,5 @@ def plot_the_final_time_ranking(session):
     session.results['Abbreviation'] == pole_lap['Driver'], 'FullName'
     ].iloc[0]
 
-    fastest_driver = full_name #this is only used to be returned to the front for analysis
+    fastest_driver = full_name #this is only used to be returned to the front for written analysis
     return (fastest_driver, fig)

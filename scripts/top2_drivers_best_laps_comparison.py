@@ -2,6 +2,41 @@ import fastf1
 import matplotlib.pyplot as plt
 
 def prepare_driver_data_for_plotting(session):
+    """
+    Extract and prepare car telemetry for the two fastest drivers in the session.
+
+    This function identifies the two drivers with the fastest lap times,
+    retrieves their telemetry (including speed and distance), extracts
+    their team color, and formats labels for plotting. It also computes the
+    minimum and maximum speed values observed across both drivers, which
+    are useful for setting plot limits.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session containing lap data, results,
+        and telemetry information.
+
+    Returns
+    -------
+    the_fastest_of_two : str
+        Full name of the fastest driver among the top two.
+    the_second_driver : str
+        Full name of the second-fastest driver.
+    driver_data : dict
+        A dictionary mapping each driver's abbreviation to a dictionary
+        containing:
+            - 'car' : pandas.DataFrame
+                Telemetry with speed and distance columns.
+            - 'color' : str
+                The team color for plotting.
+            - 'label' : str
+                Plot label including driver name and lap time.
+    vmins : list of float
+        Minimum speed values observed for each of the two drivers.
+    vmaxs : list of float
+        Maximum speed values observed for each of the two drivers.
+    """
     laps_clean = session.laps[session.laps['LapTime'].notna()]
 
     # gets only the data the 2 fastest driverss to later fetch their data 
@@ -36,6 +71,30 @@ def prepare_driver_data_for_plotting(session):
     return (the_fastest_of_two, the_second_driver, driver_data, vmins, vmaxs)
     
 def plot_2_fastest_laps_comparison_side_by_side(session):
+    """
+    Plot the speed profiles of the two fastest drivers' best laps side by side.
+
+    This function generates a line plot comparing the speed of the two fastest
+    drivers along the lap distance. Corner positions are marked with vertical
+    dotted lines using the circuit information from the session. The plot shows
+    where each driver is faster or slower and highlights braking, acceleration,
+    and top-speed sections.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session containing laps, telemetry,
+        and circuit information.
+
+    Returns
+    -------
+    the_fastest_of_two : str
+        Full name of the fastest driver.
+    the_second_driver : str
+        Full name of the second-fastest driver.
+    fig : matplotlib.figure.Figure
+        The Matplotlib figure object containing the comparison plot.
+    """
     the_fastest_of_two, the_second_driver, driver_data, vmins, vmaxs = prepare_driver_data_for_plotting(session=session)
 
     # Corner info

@@ -2,6 +2,27 @@ import fastf1
 import matplotlib.pyplot as plt
 
 def positions_changed_plot(session):
+    """
+    Plot the evolution of each driver's position over the course of a race.
+
+    This function generates a line plot where each driver is represented
+    by a line styled according to FastF1's driver color and line style.
+    The plot shows how each driver's race position changed lap by lap,
+    making it easy to visualize overtakes, consistency, and trends in
+    race performance.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 race session containing lap-by-lap
+        position data for all drivers.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The Matplotlib figure containing the position-change plot,
+        suitable for display or for use in Streamlit.
+    """
     
     fig, ax = plt.subplots(figsize=(10, 5))
 

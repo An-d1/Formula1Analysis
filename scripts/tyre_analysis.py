@@ -13,7 +13,28 @@ from fastf1.core import Laps
 
 # method to improve code reusibility
 def get_laps_data(session):
-    plt.rcdefaults()
+    """
+    Extract and return cleaned lap data for a session.
+
+    This function selects only 'quick laps' from the session, which exclude
+    laps affected by pit entry, pit exit, or safety car conditions. It returns
+    a lightweight DataFrame containing only the columns relevant for tyre and
+    stint analysis.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session containing lap data.
+
+    Returns
+    -------
+    laps_data : pandas.DataFrame
+        A DataFrame containing the cleaned lap information with the columns:
+        ['Driver', 'LapTime', 'Compound', 'Stint'].
+    """
+
+    plt.rcdefaults() #Used to reset the grid to default, beacause some styles may  have been set globally by fastf1.plottting
+
     laps = session.laps.pick_quicklaps() #Getting only the valid laps for each driver as they are the most relevant, (excluding ones like under security car or entering and exiting pits)
     # making a copy as not to work with the original data set
     laps_data = laps[['Driver', 'LapTime', 'Compound', 'Stint']].copy()
@@ -21,6 +42,25 @@ def get_laps_data(session):
 
 # this plot uses seaborn in  comparison to the one below which uses matplotlib. This one is simpler and more intuitive to understand, but sacrifices the stint data
 def plot_sessions_tyre_choices_using_seaborn(session):
+    """
+    Plot tyre compound choices using a Seaborn swarm plot.
+
+    This visualization shows the distribution of lap times for each driver,
+    colored by tyre compound. It provides a simple, intuitive comparison of
+    performance across tyre types
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session from which lap data will be extracted.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The generated Seaborn swarm plot.
+    fastest_driver_name : str
+        The driver with the overall fastest lap time in the session.
+    """
     laps_data = get_laps_data(session=session) #Getting the lap data from the custom method
     laps_data['LapTime'] = laps_data['LapTime'].dt.total_seconds() # convert laptimes in seconds
 
@@ -41,6 +81,23 @@ def plot_sessions_tyre_choices_using_seaborn(session):
     return (fig, fastest_driver_name)
 
 def tyre_stint_distribution(session):
+    """
+    Plot the number of stints completed by each driver.
+
+    This function aggregates the number of unique stints per driver and
+    produces a bar chart, providing a high-level overview of tyre usage
+    strategy throughout the race session.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session containing stint information.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The Matplotlib bar plot showing stint counts for each driver.
+    """
     laps_data = get_laps_data(session=session) #Getting the lap data from the custom method
 
     stint_counts = laps_data.groupby('Driver')['Stint'].nunique().reset_index()
@@ -64,6 +121,25 @@ def tyre_stint_distribution(session):
     return (fig)
 
 def plot_sessions_tyre_compounds_and_stints(session): 
+    """
+    Plot lap times by driver, tyre compound, and stint number.
+
+    This visualization uses a scatter plot where:
+        - Marker shape represents tyre compound (HARD, MEDIUM, SOFT)
+        - Marker color represents stint number
+    This allows a combined interpretation of tyre choice and race strategy
+    while comparing performance across drivers.
+
+    Parameters
+    ----------
+    session : fastf1.core.Session
+        A fully loaded FastF1 session providing lap and tyre data.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The Matplotlib scatter plot combining compounds and stint information.
+    """
     laps = session.laps.pick_quicklaps() #Getting only the valid laps for each driver as they are the most relevant, (excluding ones like under security car or entering and exiting pits)
 
     laps_data = laps[['Driver', 'LapTime', 'Compound', 'Stint']].copy()
