@@ -41,3 +41,5 @@ Author
 Andis Bara
 MSc student Data Science for Economics and Health
 University of Milan
+
+[F1 Race Analysis.pdf](https://github.com/user-attachments/files/33581949/F1.Race.Analysis.pdf)
