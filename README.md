@@ -42,4 +42,5 @@ Andis Bara
 MSc student Data Science for Economics and Health
 University of Milan
 
+## Take a look at what it can do:
 [F1 Race Analysis.pdf](https://github.com/user-attachments/files/33581949/F1.Race.Analysis.pdf)
